@@ -2,14 +2,14 @@ import './index.css'
 import {useState} from 'react'
 
 const Login=()=>{
-    const [isUser, setUser]= useState(true)
-
-    const onUser=()=>{
-        setUser(true)
+    const [isUser, setState]= useState(true)
+    const onUser= ()=>{
+        setState(true)
     }
     const onAdmin=()=>{
-        setUser(false)
+        setState(false)
     }
+    
     return (
         <div className='login-bg-container'>
             <div className='head'>
@@ -22,8 +22,7 @@ const Login=()=>{
                     <button type='button' onClick={onUser} className='logi-btn'>User Login</button>
                     <button type='button' onClick={onAdmin} className='logi-btn'>Admin Login</button>
                 </div>
-                {isUser=== true ? 
-                    <form className='login-form'>
+                {isUser? <form className='login-form'>
                         <h1 className='login-heading'>User</h1>
                         <div className='username-cont'>
                             <label className='label' htmlFor='usernameinp'>Username</label>
@@ -34,11 +33,11 @@ const Login=()=>{
                             <input type='text' id='userpassinp' className='log-inp' placeholder='Enter password'></input>
                         </div>
                         <button type='submit' className='btn-lo'>Login</button>
-                    </form> : 
+                    </form> :
                     <form className='login-form'>
                         <h1 className='login-heading'>Admin</h1>
                         <div className='username-cont'>
-                            <label className='label' htmlFor='usernameinp'>Username</label>
+                            <label className='label' htmlFor='usernameinp'>Admin Username</label>
                             <input type='text' id='usernameinp' className='log-inp' placeholder='Enter username'></input>
                         </div>
                         <div className='username-cont'>
@@ -46,7 +45,8 @@ const Login=()=>{
                             <input type='text' id='userpassinp' className='log-inp' placeholder='Enter password'></input>
                         </div>
                         <button type='submit' className='btn-lo'>Login</button>
-                    </form>}
+                    </form>
+                }
             </div>
         </div>
     )

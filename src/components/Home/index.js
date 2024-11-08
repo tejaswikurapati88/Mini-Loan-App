@@ -3,6 +3,7 @@ import { PiCurrencyInrBold } from "react-icons/pi";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { AiFillThunderbolt } from "react-icons/ai";
 import { BsCashCoin } from "react-icons/bs";
+import {Link} from 'react-router-dom'
 
 const Home =()=>{
     return (
@@ -35,7 +36,9 @@ const Home =()=>{
                             <p className='desc-p'>Cash with<br/> collateral</p>
                         </div>
                     </div>
-                    <button className='get-money-btn' type='button'>Get Money</button>
+                    <Link to='/payment'>
+                        <button className='get-money-btn' type='button'>Get Money</button>
+                    </Link>
                 </div>
                 <img src='https://www.moneytap.com/mt-home/images/hero-image.webp' alt='moneyimg' className='moneyimg' />
             </div>
