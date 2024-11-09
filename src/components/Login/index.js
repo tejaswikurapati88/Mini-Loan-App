@@ -1,5 +1,8 @@
 import './index.css'
 import {useState} from 'react'
+import Cookies from 'js-cookie'
+import {useNavigate} from 'react-router-dom'
+//import {v4 as uuidv4} from 'uuid'
 
 const Login=()=>{
     const [isUser, setUser]= useState(true)
@@ -11,13 +14,9 @@ const Login=()=>{
     const [errormsg, setErrmsg]= useState('')
     const [adminName, setAdminName]= useState('')
     const [adminPass, setAdminPass]= useState('')
+    const [username, setusername]= useState('')
+    const [userpassword, setUserPassword]= useState('')
 
-    const onAdminName= (eve)=>{
-        setAdminName(eve.target.value)
-    }
-    const onAdminPAss= (eve)=>{
-        setAdminPass(eve.target.value)
-    }
     const onUser= ()=>{
         setUser(true)
     }
@@ -47,6 +46,7 @@ const Login=()=>{
             setErrmsg("**Confirm password didn't matched")
         }
     }
+    const navigate= useNavigate()
     const onAdminSubmit= async (event)=>{
         event.preventDefault()
         const adminDetails={
@@ -56,9 +56,33 @@ const Login=()=>{
         const url='http://localhost:3000/api/adminlogin'
         const options = {
             method: 'POST',
+            headers: {
+                'Accept': "application/json",
+                "Content-Type": 'application/json'
+            },
             body: JSON.stringify(adminDetails),
         }
-        console.log(JSON.stringify(adminDetails))
+        
+        const response= await fetch(url, options)
+        const data= await response.json()
+        const {jwtToken} =data 
+        Cookies.set('jwtToken', jwtToken, {expires: 30})
+        navigate('/adminhome')
+    }
+
+    const onUserLogin= async(event)=>{
+        event.preventDefault()
+        //console.log(uuidv4())
+        const userdetails= {username: username, userpassword: userpassword}
+        const url= 'http://localhost:3000/api/usersreg'
+        const options = {
+            method: 'POST',
+            headers: {
+                'Accept': "application/json",
+                "Content-Type": 'application/json'
+            },
+            body: JSON.stringify(userdetails),
+        }
         const response= await fetch(url, options)
         console.log(response)
     }
@@ -91,22 +115,25 @@ const Login=()=>{
                         </div>
                         <button type='submit' className='btn-lo'>Signin</button>
                         {signinError && <p className='error'>{errormsg}</p>}
-                    </form> : 
+                    </form> 
+                : 
                     <div className='cont-lo'>
                         <p className='log-para'>Select who you are*</p>
                         <div className='login-op-cont'>
                             <button type='button' onClick={onUser} className='logi-btn'>User Login</button>
                             <button type='button' onClick={onAdmin} className='logi-btn'>Admin Login</button>
                         </div>
-                        {isUser? <form className='login-form'>
+                        {isUser? <form onSubmit={onUserLogin} className='login-form'>
                                 <h1 className='login-heading'>User</h1>
                                 <div className='username-cont'>
                                     <label className='label' htmlFor='usernameinp'>Username</label>
-                                    <input type='text' id='usernameinp' className='log-inp' placeholder='Enter username'></input>
+                                    <input type='text' id='usernameinp' defaultValue={username}
+                                    onChange={(e)=> setusername(e.target.value)} className='log-inp' placeholder='Enter username'></input>
                                 </div>
                                 <div className='username-cont'>
                                     <label className='label' htmlFor='userpassinp'>Password</label>
-                                    <input type='password' id='userpassinp' className='log-inp' placeholder='Enter password'></input>
+                                    <input type='password' id='userpassinp' defaultValue={userpassword}
+                                    onChange={(e)=> setUserPassword(e.target.value)} className='log-inp' placeholder='Enter password'></input>
                                 </div>
                                 <button type='submit' className='btn-lo'>Login</button>
                             </form> :
@@ -114,12 +141,16 @@ const Login=()=>{
                                 <h1 className='login-heading'>Admin</h1>
                                 <div className='username-cont'>
                                     <label className='label' htmlFor='usernameinp'>Admin Username</label>
-                                    <input type='text' id='usernameinp' onChange={onAdminName} value={adminName}
+                                    <input type='text' id='usernameinp' defaultValue={adminName}  
+                                    onChange={e => setAdminName(e.target.value)} 
+                                    
                                     className='log-inp' placeholder='Enter username'></input>
                                 </div>
                                 <div className='username-cont'>
                                     <label className='label' htmlFor='userpassinp'>Password</label>
-                                    <input type='password' id='userpassinp' onChange={onAdminPAss} value={adminPass} className='log-inp' placeholder='Enter password'></input>
+                                    <input type='password' id='userpassinp' defaultValue={adminPass}
+                                     onChange={e => setAdminPass(e.target.value)}
+                                      className='log-inp' placeholder='Enter password'></input>
                                 </div>
                                 <button type='submit' className='btn-lo'>Login</button>
                             </form>
